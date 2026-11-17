@@ -43,8 +43,13 @@ def normalize(raw):
         p=urlparse(v.replace("https://t.me/","tg://")); q=parse_qs(p.query)
         host=(q.get("server") or q.get("host") or [""])[0]; port=(q.get("port") or [""])[0]; secret=(q.get("secret") or [""])[0]
         try:
-            ipaddress.ip_address(host); port=int(port)
-            if 1<=port<=65535 and secret:
+            valid_host = bool(re.fullmatch(r"[A-Za-z0-9.-]{1,253}", host)) and ".." not in host
+            if valid_host:
+                try: ipaddress.ip_address(host)
+                except ValueError:
+                    if not re.fullmatch(r"(?=.{1,253}$)[A-Za-z0-9](?:[A-Za-z0-9.-]*[A-Za-z0-9])?", host): valid_host = False
+            port=int(port)
+            if valid_host and 1<=port<=65535 and secret:
                 return {"id":f"mtproto://{host}:{port}/{secret}","type":"MTProto","host":host,"port":port,"secret":secret,"source":""}
         except (ValueError,TypeError): pass
         return None
@@ -79,7 +84,7 @@ async def search_repos(client,progress,task):
     for query in QUERIES:
         progress.update(task,description=f"[cyan]GitHub: {query[:38]}")
         try:
-            data=await gh_json(client,"https://api.github.com/search/repositories",{"q":query+" archived:false","sort":"updated","order":"desc","per_page":50,"page":1})
+            data=await gh_json(client,"https://api.github.com/search/repositories",{"q":query+" archived:false","sort":"updated","order":"desc","per_page":100,"page":1})
             for r in data.get("items",[]):
                 if r.get("fork") or r.get("archived"): continue
                 found[r["full_name"]]={"full_name":r["full_name"],"html_url":r["html_url"],"default_branch":r.get("default_branch") or "main","description":r.get("description") or "","stars":r.get("stargazers_count",0),"updated_at":r.get("updated_at"),"added_at":now()}
