@@ -164,7 +164,7 @@ async def check_all(db):
         for f in asyncio.as_completed([run(x) for x in items]): await f; p.advance(task)
     save_db(db)
     good=[x for x in items if x.get("status")=="WORKING"]
-    WORKING_FILE.write_text("\\n".join(proxy_string(x) for x in good)+("\\n" if good else ""),"utf-8")
+    WORKING_FILE.write_text("\n".join(proxy_string(x) for x in good)+("\n" if good else ""),"utf-8")
     console.print(f"[green]Рабочие: {len(good)}[/]  [yellow]На ручную проверку: {sum(x.get('status')=='REVIEW' for x in items)}[/]  [red]Мёртвые: {sum(x.get('status')=='DEAD' for x in items)}[/]")
 
 def show_results(db):
@@ -179,11 +179,11 @@ def show_results(db):
 def copy_results(items):
     good=[x for x in items if x.get("status")=="WORKING"]
     if not good: console.print("[yellow]Нет подтверждённых рабочих прокси.[/]"); return
-    payload="\\n".join(proxy_string(x) for x in good)
+    payload="\n".join(proxy_string(x) for x in good)
     try:
         import pyperclip; pyperclip.copy(payload); console.print(f"[green]Скопировано в буфер: {len(good)}[/]")
     except Exception:
-        WORKING_FILE.write_text(payload+"\\n","utf-8"); console.print(f"[yellow]Буфер недоступен; сохранено в {WORKING_FILE}[/]")
+        WORKING_FILE.write_text(payload+"\n","utf-8"); console.print(f"[yellow]Буфер недоступен; сохранено в {WORKING_FILE}[/]")
 
 async def remote_version():
     url=f"https://raw.githubusercontent.com/{OWNER}/{REPO}/main/version.json"
@@ -224,7 +224,7 @@ def check_version():
 def banner():
     console.clear()
     console.print(Panel(Text(APP,justify="center",style="bold bright_cyan"),subtitle="GitHub repository scanner · Telegram proxy checker",border_style="bright_cyan"))
-    console.print("[dim]by zmlsag[/]\\n")
+    console.print("[dim]by zmlsag[/]\n")
 
 def main():
     DATA.mkdir(exist_ok=True)
@@ -234,7 +234,7 @@ def main():
         console.print("[bold cyan]2.[/] Обновить базу прокси [dim](повторно просканировать известные репозитории)[/]")
         console.print("[bold cyan]3.[/] Проверить обновления программы")
         console.print("[bold cyan]4.[/] Показать результаты / скопировать рабочие")
-        console.print("[bold cyan]0.[/] Выход\\n")
+        console.print("[bold cyan]0.[/] Выход\n")
         choice=Prompt.ask("Выбери действие",choices=["1","2","3","4","0"],default="1")
         if choice=="0": break
         db=load_db()
@@ -248,8 +248,8 @@ def main():
             elif choice=="4":
                 items=show_results(db)
                 if items and Confirm.ask("Скопировать все подтверждённые рабочие прокси?",default=True): copy_results(items)
-        except KeyboardInterrupt: console.print("\\n[yellow]Остановлено. Сохранённые данные не потеряны.[/]")
+        except KeyboardInterrupt: console.print("\n[yellow]Остановлено. Сохранённые данные не потеряны.[/]")
         except Exception as e: console.print(f"[red]Ошибка: {e}[/]")
-        Prompt.ask("\\nEnter — назад в меню",default="")
+        Prompt.ask("\nEnter — назад в меню",default="")
     console.print("[dim]by zmlsag[/]")
 if __name__=="__main__": main()
