@@ -228,11 +228,18 @@ def banner():
 
 def main():
     DATA.mkdir(exist_ok=True)
+    latest, update_url = asyncio.run(remote_version())
+    if not latest:
+        version_label = f"[yellow]Версия v{VERSION} · статус обновлений неизвестен[/]"
+    elif latest == VERSION:
+        version_label = f"[green]У вас последняя версия v{VERSION}[/]"
+    else:
+        version_label = f"[bold yellow]Вышла новая версия v{latest} — нажми 3 для обновления[/]"
     while True:
         banner()
         console.print("[bold cyan]1.[/] Найти рабочие прокси [dim](найти репозитории + проверить)[/]")
         console.print("[bold cyan]2.[/] Обновить базу прокси [dim](повторно просканировать известные репозитории)[/]")
-        console.print("[bold cyan]3.[/] Проверить обновления программы")
+        console.print(f"[bold cyan]3.[/] {version_label}")
         console.print("[bold cyan]4.[/] Показать результаты / скопировать рабочие")
         console.print("[bold cyan]0.[/] Выход\n")
         choice=Prompt.ask("Выбери действие",choices=["1","2","3","4","0"],default="1")
@@ -244,7 +251,14 @@ def main():
                 items=show_results(db)
                 if items and Confirm.ask("Скопировать все подтверждённые рабочие прокси?",default=True): copy_results(items)
             elif choice=="2": asyncio.run(collect(db,True)); asyncio.run(check_all(db))
-            elif choice=="3": check_version()
+            elif choice=="3":
+                if latest and latest != VERSION:
+                    if Confirm.ask(f"Установить v{latest}?",default=True): install_update(update_url)
+                else:
+                    latest, update_url = asyncio.run(remote_version())
+                    if latest == VERSION: console.print(f"[green]У вас последняя версия v{VERSION}.[/]")
+                    elif latest: console.print(f"[yellow]Доступна новая версия v{latest}.[/]")
+                    else: console.print("[yellow]Не удалось проверить обновления.[/]")
             elif choice=="4":
                 items=show_results(db)
                 if items and Confirm.ask("Скопировать все подтверждённые рабочие прокси?",default=True): copy_results(items)
