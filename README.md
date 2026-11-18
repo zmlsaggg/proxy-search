@@ -3,11 +3,11 @@
 ## Установка через PyPI
 
 ```powershell
-py -m pip install telegram-proxy-searcher
+py -m pip install proxy-search
 telegram-proxy-searcher
 ```
 
-Для изолированной установки CLI можно использовать `pipx install telegram-proxy-searcher`.
+Для изолированной установки CLI можно использовать `pipx install proxy-search`.
 После установки локальная база и список рабочих прокси сохраняются в пользовательской папке данных Windows, macOS или Linux, а не внутри каталога Python.
 
 
