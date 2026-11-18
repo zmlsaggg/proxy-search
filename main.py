@@ -1,6 +1,7 @@
 from __future__ import annotations
-import asyncio, base64, ipaddress, json, os, re, shutil, tempfile, zipfile
+import asyncio, base64, ipaddress, json, os, re, shutil, subprocess, sys, tempfile, zipfile
 from datetime import datetime, timezone
+from importlib.metadata import PackageNotFoundError, version as distribution_version
 from pathlib import Path
 from urllib.parse import urlparse, parse_qs, urlencode
 import httpx
@@ -12,7 +13,21 @@ from rich.prompt import Prompt, Confirm
 from rich.text import Text
 
 APP="TELEGRAM PROXY SEARCHER"; VERSION="1.0.0"; OWNER="zmlsaggg"; REPO="proxy-search"
-ROOT=Path(__file__).resolve().parent; DATA=ROOT/"data"; DB_FILE=DATA/"database.json"; WORKING_FILE=DATA/"working.txt"
+ROOT=Path(__file__).resolve().parent
+PACKAGE_NAME="telegram-proxy-searcher"
+if os.name == "nt":
+    _data_root = Path(os.getenv("LOCALAPPDATA", str(Path.home() / "AppData" / "Local")))
+elif sys.platform == "darwin":
+    _data_root = Path.home() / "Library" / "Application Support"
+else:
+    _data_root = Path(os.getenv("XDG_DATA_HOME", str(Path.home() / ".local" / "share")))
+DATA = _data_root / "TelegramProxySearcher"
+DB_FILE=DATA/"database.json"; WORKING_FILE=DATA/"working.txt"
+try:
+    distribution_version(PACKAGE_NAME)
+    _PYPI_INSTALL = True
+except PackageNotFoundError:
+    _PYPI_INSTALL = False
 QUERIES=["mtproxy", '"mtproto proxy"', '"telegram proxy"', "tg://proxy", '"telegram bypass" proxy', "mtproto", "telegram socks5 proxy", "telegram-proxy-list", "телеграм прокси"]
 MAX_REPO_FILES=35; MAX_FILE_BYTES=450_000; TIMEOUT=7.0
 console=Console()
@@ -202,6 +217,13 @@ async def remote_version():
 
 def install_update(url):
     if not url: return
+    if _PYPI_INSTALL:
+        try:
+            subprocess.run([sys.executable, "-m", "pip", "install", "--upgrade", PACKAGE_NAME], check=True)
+            console.print("[green]Обновление установлено через pip. Перезапусти программу.[/]")
+        except subprocess.CalledProcessError as e:
+            console.print(f"[red]Не удалось обновить пакет через pip (код {e.returncode}).[/]")
+        return
     try:
         with tempfile.TemporaryDirectory() as tmp:
             archive=Path(tmp)/"update.zip"
