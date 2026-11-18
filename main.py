@@ -15,19 +15,24 @@ from rich.text import Text
 APP="TELEGRAM PROXY SEARCHER"; VERSION="1.0.0"; OWNER="zmlsaggg"; REPO="proxy-search"
 ROOT=Path(__file__).resolve().parent
 PACKAGE_NAME="telegram-proxy-searcher"
-if os.name == "nt":
-    _data_root = Path(os.getenv("LOCALAPPDATA", str(Path.home() / "AppData" / "Local")))
-elif sys.platform == "darwin":
-    _data_root = Path.home() / "Library" / "Application Support"
-else:
-    _data_root = Path(os.getenv("XDG_DATA_HOME", str(Path.home() / ".local" / "share")))
-DATA = _data_root / "TelegramProxySearcher"
-DB_FILE=DATA/"database.json"; WORKING_FILE=DATA/"working.txt"
 try:
-    distribution_version(PACKAGE_NAME)
-    _PYPI_INSTALL = True
+    _installed_main = Path(__import__("importlib.metadata", fromlist=["distribution"]).distribution(PACKAGE_NAME).locate_file("main.py")).resolve()
+    _PYPI_INSTALL = _installed_main == Path(__file__).resolve()
 except PackageNotFoundError:
     _PYPI_INSTALL = False
+
+if _PYPI_INSTALL:
+    if os.name == "nt":
+        _data_root = Path(os.getenv("LOCALAPPDATA", str(Path.home() / "AppData" / "Local")))
+    elif sys.platform == "darwin":
+        _data_root = Path.home() / "Library" / "Application Support"
+    else:
+        _data_root = Path(os.getenv("XDG_DATA_HOME", str(Path.home() / ".local" / "share")))
+    DATA = _data_root / "TelegramProxySearcher"
+else:
+    # Preserve the existing repository-local database for source checkouts.
+    DATA = ROOT / "data"
+DB_FILE=DATA/"database.json"; WORKING_FILE=DATA/"working.txt"
 QUERIES=["mtproxy", '"mtproto proxy"', '"telegram proxy"', "tg://proxy", '"telegram bypass" proxy', "mtproto", "telegram socks5 proxy", "telegram-proxy-list", "телеграм прокси"]
 MAX_REPO_FILES=35; MAX_FILE_BYTES=450_000; TIMEOUT=7.0
 console=Console()
