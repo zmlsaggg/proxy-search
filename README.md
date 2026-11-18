@@ -1,14 +1,50 @@
 # TELEGRAM PROXY SEARCHER
 
-## Установка через PyPI
+## Установка через pip
+
+Нужен Python 3.11 или новее. Имя пакета в PyPI — `proxy-search`, команда запуска — `telegram-proxy-searcher`.
+
+### Windows (PowerShell)
 
 ```powershell
-py -m pip install proxy-search
+py -m pip install --upgrade proxy-search
 telegram-proxy-searcher
 ```
 
-Для изолированной установки CLI можно использовать `pipx install proxy-search`.
-После установки локальная база и список рабочих прокси сохраняются в пользовательской папке данных Windows, macOS или Linux, а не внутри каталога Python.
+### Linux и macOS
+
+```sh
+python3 -m pip install --upgrade proxy-search
+telegram-proxy-searcher
+```
+
+Если система запрещает установку в системный Python (например, сообщает об externally managed environment), создай виртуальное окружение и устанавливай пакет внутри него:
+
+```powershell
+# Windows
+py -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+
+```sh
+# Linux / macOS
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+После активации окружения на любой системе:
+
+```sh
+python -m pip install --upgrade proxy-search
+telegram-proxy-searcher
+```
+
+Обновить пакет: `python -m pip install --upgrade proxy-search`. Удалить: `python -m pip uninstall proxy-search`.
+
+Для отдельной установки консольной утилиты также подойдёт `pipx install proxy-search`.
+Локальная база и список рабочих прокси сохраняются в пользовательской папке данных Windows, macOS или Linux, а не внутри каталога Python.
+
+## Запуск из исходников
 
 
 Console utility by **zmlsag**. Searches GitHub repositories for Telegram proxy lists, extracts supported formats, checks HTTP/SOCKS proxies against Telegram from the user's current network, and stores results locally.
