@@ -1,5 +1,16 @@
 # TELEGRAM PROXY SEARCHER
 
+<p align="center">
+  Поиск публичных Telegram-прокси на GitHub и проверка HTTP/SOCKS-подключений прямо из твоей сети.
+</p>
+
+<p align="center">
+  <a href="https://pypi.org/project/proxy-search/"><img src="https://img.shields.io/pypi/v/proxy-search?style=flat-square&logo=pypi&logoColor=white&label=PyPI&color=0EA5E9" alt="PyPI version"></a>
+  <a href="https://github.com/zmlsaggg/proxy-search/releases/latest"><img src="https://img.shields.io/github/v/release/zmlsaggg/proxy-search?style=flat-square&logo=github&label=release&color=0284C7" alt="Latest release"></a>
+  <img src="https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.11+">
+  <a href="https://github.com/zmlsaggg/proxy-search/releases/latest"><img src="https://img.shields.io/badge/Windows-EXE-0078D4?style=flat-square&logo=windows&logoColor=white" alt="Windows executable"></a>
+</p>
+
 ## Установка через pip
 
 Нужен Python 3.11 или новее. Имя пакета в PyPI — `proxy-search`, команда запуска — `telegram-proxy-searcher`.
