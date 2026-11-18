@@ -1,7 +1,7 @@
 from __future__ import annotations
 import asyncio, base64, ipaddress, json, os, re, shutil, subprocess, sys, tempfile, zipfile
 from datetime import datetime, timezone
-from importlib.metadata import PackageNotFoundError, version as distribution_version
+from importlib.metadata import PackageNotFoundError, distribution as get_distribution
 from pathlib import Path
 from urllib.parse import urlparse, parse_qs, urlencode
 import httpx
@@ -13,10 +13,10 @@ from rich.prompt import Prompt, Confirm
 from rich.text import Text
 
 APP="TELEGRAM PROXY SEARCHER"; VERSION="1.0.0"; OWNER="zmlsaggg"; REPO="proxy-search"
-ROOT=Path(__file__).resolve().parent
-PACKAGE_NAME="telegram-proxy-searcher"
+ROOT=Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
+PACKAGE_NAME="proxy-search"
 try:
-    _installed_main = Path(__import__("importlib.metadata", fromlist=["distribution"]).distribution(PACKAGE_NAME).locate_file("main.py")).resolve()
+    _installed_main = Path(get_distribution(PACKAGE_NAME).locate_file("main.py")).resolve()
     _PYPI_INSTALL = _installed_main == Path(__file__).resolve()
 except PackageNotFoundError:
     _PYPI_INSTALL = False
