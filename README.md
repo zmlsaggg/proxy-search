@@ -1,5 +1,16 @@
 # TELEGRAM PROXY SEARCHER
 
+## Установка через PyPI
+
+```powershell
+py -m pip install telegram-proxy-searcher
+telegram-proxy-searcher
+```
+
+Для изолированной установки CLI можно использовать `pipx install telegram-proxy-searcher`.
+После установки локальная база и список рабочих прокси сохраняются в пользовательской папке данных Windows, macOS или Linux, а не внутри каталога Python.
+
+
 Console utility by **zmlsag**. Searches GitHub repositories for Telegram proxy lists, extracts supported formats, checks HTTP/SOCKS proxies against Telegram from the user's current network, and stores results locally.
 
 ## Windows
